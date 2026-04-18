@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VERITY — Business Analysis for WA Small Business</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:     #0f0d0a;
+      --paper:   #f5f2ec;
+      --cream:   #ede9e0;
+      --sage:    #3d5a47;
+      --sage-lt: #e8efe9;
+      --rust:    #b94a2c;
+      --rust-lt: #fdf0ec;
+      --gold:    #c8963e;
+      --muted:   #6b6560;
+      --border:  #ddd8ce;
+      --serif:   'DM Serif Display', Georgia, serif;
+      --sans:    'DM Sans', system-ui, sans-serif;
+      --radius:  4px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: var(--paper);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .nav-logo span { color: var(--sage); }
+    .nav-logo { letter-spacing: 0.12em; font-size: 1.1rem; }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      text-decoration: none; font-size: 0.875rem;
+      color: var(--muted); font-weight: 400;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta {
+      background: var(--sage) !important;
+      color: #fff !important;
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius);
+      font-weight: 500 !important;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: #2e4336 !important; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      padding: 8rem 2rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--rust);
+      background: var(--rust-lt);
+      padding: 0.3rem 0.75rem;
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--rust);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    h1 em { font-style: italic; color: var(--sage); }
+
+    .hero-sub {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 42ch; margin-bottom: 2.5rem;
+      line-height: 1.7; font-weight: 300;
+    }
+
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-block;
+      background: var(--sage); color: #fff;
+      padding: 0.875rem 2rem;
+      border-radius: var(--radius);
+      text-decoration: none; font-weight: 500;
+      font-size: 0.9rem; letter-spacing: 0.01em;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: #2e4336; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-block;
+      border: 1px solid var(--border); color: var(--ink);
+      padding: 0.875rem 2rem;
+      border-radius: var(--radius);
+      text-decoration: none; font-weight: 400;
+      font-size: 0.9rem;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-secondary:hover { background: var(--cream); border-color: var(--ink); }
+
+    /* slots counter */
+    .slots-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+    .slots-number {
+      font-family: var(--serif);
+      font-size: 4rem;
+      line-height: 1;
+      color: var(--sage);
+      margin-bottom: 0.25rem;
+    }
+    .slots-label {
+      font-size: 0.8rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+    .slots-bar-wrap {
+      background: var(--border); border-radius: 2px;
+      height: 6px; margin-bottom: 0.5rem;
+    }
+    .slots-bar {
+      height: 6px; border-radius: 2px;
+      background: var(--sage);
+      width: 0%;
+      transition: width 1.5s cubic-bezier(.16,1,.3,1);
+    }
+    .slots-bar-label {
+      font-size: 0.75rem; color: var(--muted);
+      display: flex; justify-content: space-between;
+    }
+    .slots-divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+    .slots-meta { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+    .slots-meta strong { color: var(--ink); font-weight: 500; }
+
+    /* ─── SECTION ─── */
+    .section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    h2 em { font-style: italic; color: var(--sage); }
+    .section-intro {
+      font-size: 1rem; color: var(--muted);
+      max-width: 55ch; margin-bottom: 3rem; font-weight: 300;
+    }
+
+    /* ─── ENGAGEMENT GRID ─── */
+    .engagement-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .engagement-step {
+      background: var(--paper);
+      padding: 2rem;
+    }
+    .step-num {
+      font-family: var(--serif);
+      font-size: 3rem;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .step-icon {
+      width: 36px; height: 36px;
+      background: var(--sage-lt);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .step-title {
+      font-family: var(--serif);
+      font-size: 1.2rem; margin-bottom: 0.5rem;
+    }
+    .step-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+    .step-tag {
+      display: inline-block; margin-top: 1rem;
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--sage-lt); color: var(--sage);
+      padding: 0.2rem 0.6rem; border-radius: 2px;
+    }
+
+    /* ─── DELIVERABLES ─── */
+    .deliverables-strip {
+      background: var(--cream);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem;
+    }
+    .deliverables-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; align-items: start;
+    }
+    .deliverables-list {
+      display: flex; flex-direction: column; gap: 1px;
+      border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    }
+    .deliverable-item {
+      background: var(--paper);
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 0.875rem;
+      transition: background .15s;
+    }
+    .deliverable-item:hover { background: var(--sage-lt); }
+    .del-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--sage); color: #fff;
+      font-size: 0.6rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ─── TIMELINE ─── */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item {
+      display: flex; gap: 1.5rem; padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tl-item:last-child { border-bottom: none; }
+    .tl-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--sage-lt); border: 1px solid var(--sage);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 500; color: var(--sage);
+      flex-shrink: 0;
+    }
+    .tl-content { padding-top: 0.4rem; }
+    .tl-title { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .tl-desc { font-size: 0.8rem; color: var(--muted); }
+    .tl-duration {
+      font-size: 0.7rem; color: var(--gold); font-weight: 500;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+
+    /* ─── QUALIFY CARDS ─── */
+    .qualify-card {
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 1.5rem;
+      background: var(--paper);
+    }
+    .qualify-card.yes { border-color: var(--sage); background: var(--sage-lt); }
+    .qualify-card.no  { border-color: var(--border); opacity: 0.7; }
+    .qualify-card h4 { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1rem; }
+    .qualify-card.yes h4 { color: var(--sage); }
+    .qualify-card.no  h4 { color: var(--muted); }
+    .qualify-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .qualify-list li { font-size: 0.875rem; display: flex; gap: 0.5rem; color: var(--ink); }
+    .qualify-list li span:first-child { flex-shrink: 0; }
+
+    /* ─── ABOUT ─── */
+    .about-strip {
+      background: var(--sage);
+      color: #fff;
+      padding: 5rem 2rem;
+    }
+    .about-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    }
+    .about-strip h2 { color: #fff; }
+    .about-strip h2 em { color: #a8c4ae; }
+    .about-sub {
+      color: #a8c4ae; font-size: 1rem; margin-bottom: 2rem; font-weight: 300; line-height: 1.75;
+    }
+
+    /* value pillars replacing cred list */
+    .pillar-list { display: flex; flex-direction: column; gap: 1.25rem; }
+    .pillar-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .pillar-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .pillar-text strong {
+      display: block; font-size: 0.85rem; color: #fff; font-weight: 500; margin-bottom: 0.15rem;
+    }
+    .pillar-text span {
+      font-size: 0.8rem; color: #a8c4ae; line-height: 1.5;
+    }
+
+    /* tools grid */
+    .about-tools {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; overflow: hidden;
+    }
+    .tool-cell {
+      background: rgba(255,255,255,0.05);
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.03em;
+      transition: background .15s;
+    }
+    .tool-cell:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .tool-cell strong { display: block; font-size: 0.8rem; color: #fff; margin-bottom: 0.2rem; font-weight: 500; }
+
+    /* partnership promise bar */
+    .promise-bar {
+      margin-top: 2rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .promise-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 0.8rem; color: #a8c4ae;
+    }
+    .promise-item::before {
+      content: '';
+      width: 18px; height: 1px;
+      background: rgba(255,255,255,0.3);
+      flex-shrink: 0;
+    }
+
+    /* ─── APPLICATION FORM ─── */
+    .form-section {
+      padding: 5rem 2rem;
+      max-width: 760px; margin: 0 auto;
+    }
+    .form-section h2 { text-align: center; margin-bottom: 0.5rem; }
+    .form-section .section-intro { text-align: center; margin: 0 auto 3rem; }
+
+    .form-card {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem; }
+    .form-group label {
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color .15s, background .15s;
+      width: 100%;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--sage);
+      background: #fff;
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+
+    .checkbox-group {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .checkbox-label {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.8rem; color: var(--ink);
+      cursor: pointer; padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--cream);
+      transition: background .15s, border-color .15s;
+    }
+    .checkbox-label:hover { background: var(--sage-lt); border-color: var(--sage); }
+    .checkbox-label input[type="checkbox"] { margin-top: 0.15rem; accent-color: var(--sage); flex-shrink: 0; }
+
+    .checkbox-section-label {
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .submit-row { display: flex; align-items: center; gap: 1.5rem; margin-top: 1rem; }
+    .btn-submit {
+      background: var(--sage); color: #fff;
+      border: none; cursor: pointer;
+      padding: 0.875rem 2rem;
+      border-radius: var(--radius);
+      font-family: var(--sans);
+      font-size: 0.9rem; font-weight: 500;
+      transition: background .2s, transform .15s;
+    }
+    .btn-submit:hover { background: #2e4336; transform: translateY(-1px); }
+    .submit-note { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+
+    .form-success {
+      display: none; text-align: center; padding: 3rem 0;
+    }
+    .success-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--sage); color: #fff;
+      font-size: 1.25rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .success-title { font-family: var(--serif); font-size: 1.75rem; margin-bottom: 0.5rem; }
+    .success-sub { font-size: 0.9rem; color: var(--muted); max-width: 38ch; margin: 0 auto; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.8rem; color: var(--muted);
+    }
+    footer a { color: var(--sage); text-decoration: none; }
+
+    /* ─── ANIMATIONS ─── */
+    .fade-up {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; gap: 2rem; padding: 6rem 1.25rem 3rem; }
+      .engagement-grid { grid-template-columns: 1fr; }
+      .deliverables-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .checkbox-group { grid-template-columns: 1fr; }
+      nav { padding: 1rem; }
+      .nav-links { gap: 1rem; }
+      .nav-links a:not(.nav-cta) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>VERITY</span></a>
+  <div class="nav-links">
+    <a href="#engagement">How it works</a>
+    <a href="#about">About us</a>
+    <a href="#apply" class="nav-cta">Apply now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow">Slots filling — 20 engagements only</div>
+    <h1>Honest analysis. <em>Real outcomes.</em> No bill.</h1>
+    <p class="hero-sub">VERITY is a team of business professionals offering structured, pro bono BA engagements to qualifying WA small businesses — because good analysis shouldn't be a luxury.</p>
+    <div class="hero-actions">
+      <a href="#apply" class="btn-primary">Apply for a free engagement</a>
+      <a href="#engagement" class="btn-secondary">See what's included</a>
+    </div>
+  </div>
+
+  <div class="slots-card fade-up">
+    <div class="slots-number" id="slots-remaining">20</div>
+    <div class="slots-label">Engagements remaining</div>
+    <div class="slots-bar-wrap">
+      <div class="slots-bar" id="slots-bar"></div>
+    </div>
+    <div class="slots-bar-label">
+      <span>0 taken</span>
+      <span>20 total</span>
+    </div>
+    <hr class="slots-divider"/>
+    <div class="slots-meta">
+      <strong>Who qualifies:</strong> WA-based small business (under 50 staff), not currently supported by a BA consultant, with a real operational or systems challenge to solve.
+    </div>
+    <div style="margin-top: 1rem;">
+      <a href="#apply" class="btn-primary" style="display:block;text-align:center;font-size:0.85rem;">Reserve your slot →</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S INCLUDED -->
+<section class="section" id="engagement">
+  <div class="fade-up">
+    <div class="section-label">What you receive</div>
+    <h2>A full BA engagement, <em>structured</em> and professional.</h2>
+    <p class="section-intro">This isn't a free call or a worksheet. Every VERITY engagement follows the IIBA Business Analysis Body of Knowledge framework — the same approach used by enterprise BAs in ASX-listed companies.</p>
+  </div>
+
+  <div class="engagement-grid fade-up">
+    <div class="engagement-step">
+      <div class="step-num">01</div>
+      <div class="step-icon">🔍</div>
+      <div class="step-title">Current State Analysis</div>
+      <div class="step-desc">We map your existing processes, systems, and pain points. Root cause analysis using structured BA techniques — not gut feel.</div>
+      <span class="step-tag">Strategy Analysis</span>
+    </div>
+    <div class="engagement-step">
+      <div class="step-num">02</div>
+      <div class="step-icon">🗺</div>
+      <div class="step-title">Requirements Elicitation</div>
+      <div class="step-desc">Structured interviews, stakeholder mapping, and requirements workshops to surface what your business actually needs — not just what it thinks it needs.</div>
+      <span class="step-tag">Elicitation & Collaboration</span>
+    </div>
+    <div class="engagement-step">
+      <div class="step-num">03</div>
+      <div class="step-icon">🎯</div>
+      <div class="step-title">Future State Roadmap</div>
+      <div class="step-desc">A prioritised, vendor-neutral recommendations report with a change strategy — what to fix, in what order, and how to measure success.</div>
+      <span class="step-tag">Solution Evaluation</span>
+    </div>
+  </div>
+
+  <!-- Deliverables -->
+  <div class="deliverables-strip" style="margin: 4rem -2rem -5rem; padding: 4rem 2rem;">
+    <div class="deliverables-inner">
+      <div>
+        <div class="section-label">Deliverables</div>
+        <h2 style="font-size:2rem;">What you walk away with</h2>
+        <p style="font-size:0.9rem;color:var(--muted);margin-top:0.75rem;font-weight:300;">Every engagement produces documented artefacts — real outputs you can hand to any developer, consultant, or operations team.</p>
+      </div>
+      <div class="deliverables-list">
+        <div class="deliverable-item"><div class="del-check">✓</div>Process maps (BPMN format) of your current state</div>
+        <div class="deliverable-item"><div class="del-check">✓</div>Stakeholder register with roles and interests documented</div>
+        <div class="deliverable-item"><div class="del-check">✓</div>Requirements specification document</div>
+        <div class="deliverable-item"><div class="del-check">✓</div>Gap analysis — current state vs desired future state</div>
+        <div class="deliverable-item"><div class="del-check">✓</div>Risk register with likelihood and impact ratings</div>
+        <div class="deliverable-item"><div class="del-check">✓</div>Prioritised recommendations with KPIs for success</div>
+        <div class="deliverable-item"><div class="del-check">✓</div>Change strategy with phased implementation plan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="section" id="process" style="padding-top:8rem;">
+  <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+    <div>
+      <div class="section-label">Timeline</div>
+      <h2>How an engagement <em>unfolds</em></h2>
+      <p class="section-intro">Each engagement is typically completed within 3–4 weeks, around your schedule. No disruption to your operations.</p>
+
+      <div style="margin-top:1.5rem;">
+        <div class="qualify-card yes" style="margin-bottom:1rem;">
+          <h4>✓ This is right for you if</h4>
+          <ul class="qualify-list">
+            <li><span>→</span><span>You have a specific business problem you can't solve alone</span></li>
+            <li><span>→</span><span>You're a WA SME with under 50 employees</span></li>
+            <li><span>→</span><span>You're willing to commit 2–3 hours across the engagement</span></li>
+            <li><span>→</span><span>You're open to honest findings, even uncomfortable ones</span></li>
+          </ul>
+        </div>
+        <div class="qualify-card no">
+          <h4>✗ This isn't right if</h4>
+          <ul class="qualify-list">
+            <li><span>→</span><span>You want someone to build software for you</span></li>
+            <li><span>→</span><span>You have no specific challenge identified</span></li>
+            <li><span>→</span><span>You're already engaged with a BA or management consultant</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot">01</div>
+        <div class="tl-content">
+          <div class="tl-title">Application review</div>
+          <div class="tl-desc">Submit your application. You'll hear back within 3 business days on whether your business qualifies for a slot.</div>
+          <div class="tl-duration">1–3 days</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">02</div>
+        <div class="tl-content">
+          <div class="tl-title">Discovery call</div>
+          <div class="tl-desc">30-minute video call to understand your context, confirm scope, and schedule the elicitation sessions.</div>
+          <div class="tl-duration">30 minutes</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">03</div>
+        <div class="tl-content">
+          <div class="tl-title">Elicitation sessions</div>
+          <div class="tl-desc">1–2 structured sessions with you and key stakeholders using BA elicitation techniques: interviews, workshops, observation.</div>
+          <div class="tl-duration">2–4 hours total</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">04</div>
+        <div class="tl-content">
+          <div class="tl-title">Analysis & documentation</div>
+          <div class="tl-desc">All findings are analysed, modelled, and written up into your deliverables package.</div>
+          <div class="tl-duration">1–2 weeks</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">05</div>
+        <div class="tl-content">
+          <div class="tl-title">Presentation & handover</div>
+          <div class="tl-desc">30-minute presentation of findings and recommendations. All documents handed over in accessible formats.</div>
+          <div class="tl-duration">30 minutes + docs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT — rebuilt as team messaging -->
+<section class="about-strip" id="about">
+  <div class="about-inner">
+    <div class="fade-up">
+      <div class="section-label" style="color:#a8c4ae;">Who we are</div>
+      <h2>Business people, <em>in your corner.</em></h2>
+      <p class="about-sub">
+        VERITY is a team of business professionals with backgrounds spanning finance, operations, and strategy. We've worked inside organisations — we know what broken processes feel like from the inside, and we know what it takes to fix them.<br><br>
+        We started this because great business analysis shouldn't be reserved for enterprises with big budgets. We want to grow alongside WA businesses — not just advise them and walk away.
+      </p>
+
+      <div class="pillar-list">
+        <div class="pillar-item">
+          <div class="pillar-icon">🤝</div>
+          <div class="pillar-text">
+            <strong>Partners, not consultants</strong>
+            <span>We treat every engagement as a collaboration. Your context shapes the analysis — we just bring the structure.</span>
+          </div>
+        </div>
+        <div class="pillar-item">
+          <div class="pillar-icon">📐</div>
+          <div class="pillar-text">
+            <strong>Rigorous methodology</strong>
+            <span>Every engagement is grounded in IIBA's BABOK framework — the same standard used by professional BAs globally.</span>
+          </div>
+        </div>
+        <div class="pillar-item">
+          <div class="pillar-icon">🌱</div>
+          <div class="pillar-text">
+            <strong>Built to grow with you</strong>
+            <span>Our goal isn't a one-off report. It's to leave you with the tools, language, and clarity to keep improving independently.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fade-up">
+      <div style="font-size:0.7rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#a8c4ae;margin-bottom:1rem;">BA tools used in every engagement</div>
+      <div class="about-tools">
+        <div class="tool-cell"><strong>BPMN</strong>Process maps</div>
+        <div class="tool-cell"><strong>BABOK</strong>Framework</div>
+        <div class="tool-cell"><strong>MoSCoW</strong>Prioritisation</div>
+        <div class="tool-cell"><strong>SWOT</strong>State analysis</div>
+        <div class="tool-cell"><strong>5-Whys</strong>Root cause</div>
+        <div class="tool-cell"><strong>RACI</strong>Stakeholders</div>
+        <div class="tool-cell"><strong>Power BI</strong>Data viz</div>
+        <div class="tool-cell"><strong>Lucidchart</strong>Modelling</div>
+        <div class="tool-cell"><strong>ECBA</strong>Standard</div>
+      </div>
+
+      <div class="promise-bar">
+        <div class="promise-item">No upsells — the engagement is genuinely free</div>
+        <div class="promise-item">No data harvesting or third-party sharing</div>
+        <div class="promise-item">No obligation beyond your honest participation</div>
+        <div class="promise-item">Limited to 20 engagements so every business gets real depth</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATION FORM -->
+<section class="form-section" id="apply">
+  <div class="fade-up">
+    <div class="section-label" style="text-align:center;">Ready to apply</div>
+    <h2>Apply for a free <em>engagement</em></h2>
+    <p class="section-intro">Takes 5 minutes. We'll review your application and respond within 3 business days.</p>
+  </div>
+
+  <div class="form-card fade-up">
+    <div id="form-content">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your name *</label>
+          <input type="text" id="f-name" name="name" placeholder="Jane Smith" required/>
+        </div>
+        <div class="form-group">
+          <label>Business name *</label>
+          <input type="text" id="f-biz" name="business_name" placeholder="Smith & Co." required/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email address *</label>
+          <input type="email" id="f-email" name="email" placeholder="jane@smithco.com.au" required/>
+        </div>
+        <div class="form-group">
+          <label>Phone number</label>
+          <input type="tel" id="f-phone" name="phone" placeholder="04XX XXX XXX"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Industry *</label>
+          <select id="f-industry" name="industry">
+            <option value="">Select industry</option>
+            <option>Retail / E-commerce</option>
+            <option>Hospitality / Food & Beverage</option>
+            <option>Construction / Trades</option>
+            <option>Professional Services</option>
+            <option>Healthcare / Allied Health</option>
+            <option>Logistics / Transport</option>
+            <option>Not-for-profit</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Number of employees</label>
+          <select id="f-size" name="team_size">
+            <option value="">Select</option>
+            <option>1–5</option>
+            <option>6–15</option>
+            <option>16–30</option>
+            <option>31–50</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>What's your main business challenge? *</label>
+        <textarea id="f-problem" name="main_challenge" placeholder="Briefly describe the problem, inefficiency, or decision you're trying to work through. There are no wrong answers here."></textarea>
+      </div>
+
+      <div class="checkbox-section-label">What areas are you hoping to address? (select all that apply)</div>
+      <div class="checkbox-group">
+        <label class="checkbox-label"><input type="checkbox" name="areas" value="Process inefficiencies / bottlenecks"/> Process inefficiencies / bottlenecks</label>
+        <label class="checkbox-label"><input type="checkbox" name="areas" value="Systems / software decisions"/> Systems / software decisions</label>
+        <label class="checkbox-label"><input type="checkbox" name="areas" value="Data or reporting gaps"/> Data or reporting gaps</label>
+        <label class="checkbox-label"><input type="checkbox" name="areas" value="Scaling or growth planning"/> Scaling or growth planning</label>
+        <label class="checkbox-label"><input type="checkbox" name="areas" value="Cost reduction opportunities"/> Cost reduction opportunities</label>
+        <label class="checkbox-label"><input type="checkbox" name="areas" value="Customer experience issues"/> Customer experience issues</label>
+      </div>
+
+      <div class="form-group">
+        <label>Anything else you'd like us to know?</label>
+        <textarea id="f-extra" name="additional_info" placeholder="Optional — previous attempts to solve this, constraints we should know about, etc." style="min-height:70px;"></textarea>
+      </div>
+
+      <div class="submit-row">
+        <button class="btn-submit" id="submit-btn" onclick="submitForm()">Submit application</button>
+        <span class="submit-note">We review every application personally and respond within 3 business days.</span>
+      </div>
+
+      <div id="form-error" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#fdf0ec;border:1px solid #f0c4b4;border-radius:4px;font-size:0.85rem;color:#b94a2c;"></div>
+    </div>
+
+    <div class="form-success" id="form-success">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Application received</div>
+      <div class="success-sub">Thank you — we'll review your application and be in touch within 3 business days. Check your inbox (and spam folder, just in case).</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>VERITY — Pro Bono Business Analysis for WA SMEs · Perth, Western Australia</p>
+  <p style="margin-top:0.4rem;">Limited to 20 engagements · <a href="mailto:hello@verity.com.au">hello@verity.com.au</a> · Built with intention</p>
+</footer>
+
+<script>
+  // ── Intersection observer for fade-up animations ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ── Slots bar on load ──
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const taken = 0;
+      const total = 20;
+      document.getElementById('slots-remaining').textContent = total - taken;
+      document.getElementById('slots-bar').style.width = (taken / total * 100) + '%';
+      document.querySelector('.slots-bar-label span:first-child').textContent = taken + ' taken';
+    }, 400);
+  });
+
+  // ── Form submission → Formspree ──
+  async function submitForm() {
+    const name    = document.getElementById('f-name').value.trim();
+    const biz     = document.getElementById('f-biz').value.trim();
+    const email   = document.getElementById('f-email').value.trim();
+    const problem = document.getElementById('f-problem').value.trim();
+    const err     = document.getElementById('form-error');
+    const btn     = document.getElementById('submit-btn');
+
+    err.style.display = 'none';
+
+    // Client-side validation
+    if (!name || !biz || !email || !problem) {
+      err.style.display = 'block';
+      err.textContent = 'Please fill in all required fields (name, business name, email, and your main challenge).';
+      return;
+    }
+    if (!email.includes('@') || !email.includes('.')) {
+      err.style.display = 'block';
+      err.textContent = 'Please enter a valid email address.';
+      return;
+    }
+
+    // Collect checked areas
+    const checkedAreas = [...document.querySelectorAll('input[name="areas"]:checked')]
+      .map(cb => cb.value).join(', ') || 'None selected';
+
+    // Build payload
+    const payload = {
+      name,
+      business_name:   biz,
+      email,
+      phone:           document.getElementById('f-phone').value.trim() || 'Not provided',
+      industry:        document.getElementById('f-industry').value || 'Not specified',
+      team_size:       document.getElementById('f-size').value || 'Not specified',
+      main_challenge:  problem,
+      areas:           checkedAreas,
+      additional_info: document.getElementById('f-extra').value.trim() || 'None'
+    };
+
+    // Disable button while submitting
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    try {
+      const response = await fetch('https://formspree.io/f/xojydrdp', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body:    JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        // Show success state
+        document.getElementById('form-content').style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+      } else {
+        const data = await response.json();
+        err.style.display = 'block';
+        err.textContent = data?.errors?.[0]?.message
+          || 'Something went wrong. Please try again or email us directly at hello@verity.com.au';
+        btn.disabled = false;
+        btn.textContent = 'Submit application';
+      }
+    } catch (e) {
+      err.style.display = 'block';
+      err.textContent = 'Network error — please check your connection and try again.';
+      btn.disabled = false;
+      btn.textContent = 'Submit application';
+    }
+  }
+</script>
+</body>
+</html>
